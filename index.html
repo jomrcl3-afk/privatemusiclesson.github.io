@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="id"><head><base target="_top"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><?= nama ?></title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--bg1:#e6f4ff;--bg2:#c2e2fa;--main:#3a9fe6;--deep:#1d6aa5;--tx:#16354d;--mut:#6a8aa3;--ok:#5ccf9b;--sun:#ffd166;
+--out:7px 7px 16px rgba(55,120,180,.26),-6px -6px 14px rgba(255,255,255,.95);
+--inn:inset 2px 2px 5px rgba(255,255,255,.95),inset -3px -3px 8px rgba(80,140,200,.12);
+--dent:inset 4px 4px 9px rgba(60,120,180,.2),inset -4px -4px 9px rgba(255,255,255,.95)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:'Nunito',system-ui,sans-serif;font-weight:600;background:linear-gradient(165deg,var(--bg1),var(--bg2)) fixed;color:var(--tx);padding-bottom:108px}
+h1,h2,h3,h4,.dt,.big{font-family:'Fredoka','Nunito',system-ui,sans-serif}
+header{position:relative;overflow:hidden;background:linear-gradient(150deg,#9ad8ff,#3a9fe6 55%,#2b84cc);color:#fff;padding:22px 18px 40px;border-radius:0 0 38px 38px;box-shadow:0 14px 26px rgba(40,110,180,.35),inset 0 5px 10px rgba(255,255,255,.4),inset 0 -8px 14px rgba(10,60,110,.28)}
+header h1{margin:0;font-size:24px;text-shadow:0 2px 0 rgba(10,60,110,.25)}
+.eb{display:flex;gap:8px;margin-top:6px}.eb button{width:auto;padding:6px 14px;font-size:13px}
+.nt{position:absolute;color:#fff;opacity:.35;font-size:28px;animation:fl 4s ease-in-out infinite;pointer-events:none}
+@keyframes fl{50%{transform:translateY(-8px) rotate(10deg)}}
+@keyframes pop{0%{transform:scale(.4)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+h2{margin:0;font-size:26px}h3{margin:0 0 2px;font-size:19px}h4{margin:0}
+main{padding:22px 14px 14px;max-width:720px;margin:auto}
+nav{position:fixed;left:12px;right:12px;bottom:10px;display:flex;gap:4px;padding:6px;border-radius:30px;background:linear-gradient(145deg,#fafdff,#dff0fd);box-shadow:var(--out),var(--inn);z-index:10;max-width:696px;margin:auto}
+nav button{flex:1;padding:8px 2px;border:0;background:none;font:800 11px 'Nunito',sans-serif;color:var(--mut);border-radius:24px;cursor:pointer;transition:transform .12s}
+nav button i{display:block;font-style:normal;font-size:21px}
+nav button.on{color:#fff;background:linear-gradient(145deg,#7cc8f7,#2f8fdc);box-shadow:4px 4px 9px rgba(40,110,180,.4),inset 2px 2px 4px rgba(255,255,255,.45),inset -3px -3px 6px rgba(15,70,130,.3)}
+nav button:active{transform:scale(.93)}
+.card{background:linear-gradient(145deg,#fafdff,#e8f4fe);border-radius:28px;box-shadow:var(--out),var(--inn);padding:16px;margin-bottom:16px}
+input,select,textarea{font:inherit;color:var(--tx);padding:12px 14px;border:0;border-radius:18px;width:100%;margin:4px 0;background:#f1f8ff;box-shadow:var(--dent);outline:none}
+input:focus,select:focus,textarea:focus{box-shadow:var(--dent),0 0 0 3px rgba(58,159,230,.35)}
+button.b,a.b{font:800 15px 'Nunito',sans-serif;padding:13px;border:0;border-radius:20px;width:100%;margin:4px 0;cursor:pointer;display:block;text-align:center;text-decoration:none;color:#fff;
+background:linear-gradient(145deg,#7cc8f7,#2f8fdc);box-shadow:6px 6px 13px rgba(40,115,185,.38),-4px -4px 10px rgba(255,255,255,.85),inset 2px 2px 5px rgba(255,255,255,.45),inset -3px -3px 6px rgba(15,70,130,.3);transition:transform .12s,box-shadow .12s}
+button.b:active,a.b:active{transform:scale(.96);box-shadow:inset 4px 4px 10px rgba(15,70,130,.4),inset -3px -3px 8px rgba(255,255,255,.3)}
+button.b.o,a.b.o{color:var(--deep);background:linear-gradient(145deg,#fafdff,#dff0fd);box-shadow:var(--out),var(--inn)}
+button.b.o:active{box-shadow:var(--dent)}
+button.b.d{color:#b00}button.b:disabled{opacity:.35;pointer-events:none}
+.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.sp{justify-content:space-between}.row.n>*{flex:none}.row.w{flex-wrap:wrap}.row.w>*{flex:1 1 auto}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.g2 button{margin:0}
+small,.mut{color:var(--mut)}label small{margin-left:6px}
+.tag{font-size:11px;font-weight:800;padding:3px 10px;border-radius:12px;background:#dceefc;color:var(--main);box-shadow:var(--inn)}.tag.ok{background:#d7f7e8;color:#16774b}
+.hide{display:none!important}
+#msg{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#16354d;color:#fff;padding:10px 16px;border-radius:20px;display:none;z-index:30;max-width:92%;box-shadow:0 8px 18px #0004}
+.lo{flex:none;width:auto;background:#fff3;color:#fff;border:1px solid #fff7;padding:5px 12px;border-radius:14px;font:800 12px 'Nunito',sans-serif;cursor:pointer;position:relative}
+.av{position:relative;border-radius:50%;background:linear-gradient(145deg,#d6ecfd,#a9d6f7);color:var(--deep);display:flex;align-items:center;justify-content:center;font:700 24px 'Fredoka',sans-serif;overflow:hidden;flex:none;border:4px solid #fff;box-shadow:var(--out)}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.circles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.c{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;font:inherit;padding:0;cursor:pointer}
+.ci{width:100%;max-width:76px;aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 25px 'Fredoka',sans-serif;color:var(--mut);background:linear-gradient(145deg,#e7f3fe,#cfe6fa);box-shadow:var(--dent)}
+.c.done .ci,.mic.done{background:radial-gradient(circle at 30% 25%,#a4f3cc,#40c389 72%);color:#0b4a30;box-shadow:5px 5px 12px rgba(40,140,100,.4),-4px -4px 10px rgba(255,255,255,.9),inset 3px 3px 6px rgba(255,255,255,.55),inset -4px -5px 9px rgba(20,110,70,.3)}
+.c.warn .ci,.mic.warn{background:radial-gradient(circle at 30% 25%,#ffeaa9,#ffbd38 72%);color:#5a3a00;box-shadow:5px 5px 12px rgba(190,130,20,.4),-4px -4px 10px rgba(255,255,255,.9),inset 3px 3px 6px rgba(255,255,255,.55),inset -4px -5px 9px rgba(170,100,0,.3)}
+.c.sel .ci{box-shadow:0 0 0 4px #fff,0 0 0 8px var(--main)}.c.new .ci{animation:pop .4s}
+.pct{padding:6px 16px;border-radius:20px;font:700 16px 'Fredoka',sans-serif;background:linear-gradient(145deg,#ffe08a,#ffbd38);box-shadow:var(--inn),3px 3px 8px rgba(190,130,20,.3)}.pct.g{background:linear-gradient(145deg,#a4f3cc,#40c389)}.pct.r{background:linear-gradient(145deg,#ffb1aa,#f2706a)}
+.cheer{text-align:center;font:600 16px 'Fredoka',sans-serif;color:var(--deep);margin-top:10px}
+.mi{display:flex;gap:12px;padding:12px 0;border-top:2px dotted #c6e2f8;cursor:pointer}.mi:first-of-type{border-top:0}.mi.ro{cursor:default}
+.mic{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 15px 'Fredoka',sans-serif;flex:none;background:linear-gradient(145deg,#e7f3fe,#cfe6fa);box-shadow:var(--dent);color:var(--mut)}
+.mic.done,.mic.warn{box-shadow:3px 3px 7px rgba(60,110,150,.3),inset 2px 2px 4px rgba(255,255,255,.5)}
+.mt{margin-top:2px;font-size:15px}
+.pk{position:relative}.pk input{padding-right:40px}
+.x{position:absolute;right:10px;top:36px;border:0;background:none;font-size:18px;color:var(--mut);cursor:pointer}
+.sg{position:absolute;left:0;right:0;top:100%;background:#f7fbff;border-radius:20px;box-shadow:var(--out);z-index:5;max-height:320px;overflow:auto;margin-top:4px}
+.sgi{padding:12px 14px;border-bottom:2px dotted #cbe4f8;cursor:pointer}.sgi:last-child{border:0}
+.chips{display:flex;gap:10px;overflow-x:auto;padding:4px 4px 12px;margin-bottom:4px}
+.chip{flex:none;padding:10px 16px;border-radius:20px;border:0;background:linear-gradient(145deg,#fafdff,#dff0fd);box-shadow:var(--out),var(--inn);font:800 14px 'Nunito',sans-serif;color:var(--deep);text-align:center;cursor:pointer}
+.chip.on{background:linear-gradient(145deg,#7cc8f7,#2f8fdc);color:#fff;box-shadow:4px 4px 9px rgba(40,110,180,.4),inset 2px 2px 4px rgba(255,255,255,.45)}.chip.on small{color:#e7f3fe}.chip small{display:block;font-weight:700}
+table.t{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0}.t th{background:#dceefc;color:var(--deep);padding:7px 6px;text-align:left;font-family:'Fredoka',sans-serif}.t td{border-bottom:2px dotted #cbe4f8;padding:7px 6px;vertical-align:top}
+.sks{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:6px}
+.sk{aspect-ratio:1;border:0;border-radius:18px;font:700 20px 'Fredoka',sans-serif;color:var(--deep);background:linear-gradient(145deg,#fafdff,#dff0fd);box-shadow:var(--out),var(--inn);cursor:pointer;transition:transform .12s}
+.sk.on{color:#fff;background:linear-gradient(145deg,#7cc8f7,#2f8fdc);box-shadow:inset 3px 3px 8px rgba(15,70,130,.45),inset -2px -2px 6px rgba(255,255,255,.25)}
+.sk:active{transform:scale(.92)}
+.skl{margin-top:6px;font:600 15px 'Fredoka',sans-serif;color:var(--deep);min-height:22px}
+.scs{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.sc{display:inline-block;padding:3px 10px;border-radius:12px;background:#e7f3fe;color:var(--deep);font-size:13px;font-weight:700}
+.po{display:none}.cb{display:flex;gap:10px;align-items:center}.cb input{width:22px;height:22px;margin:0}
+#linkBox{position:fixed;inset:0;background:#16354d88;display:flex;align-items:center;justify-content:center;z-index:20}
+details summary{cursor:pointer}
+.card.doc{background:#fff;box-shadow:none;border:3px solid #cfe6fa;border-radius:26px}
+.dh{background:linear-gradient(135deg,#7cc8f7,#2a86d0);color:#fff;border-radius:20px;padding:14px 16px;margin-bottom:12px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.dh small{color:#e7f3fe}.dt{font-size:26px;font-weight:700;letter-spacing:.5px}
+.dh .dt{font-size:clamp(17px,5vw,26px)}.dh .row.sp>div:first-child{flex:1;min-width:0}.dh .row.sp>div:last-child{flex:none;max-width:44%;font-size:13px}
+.tg{display:inline-block;margin-top:4px;padding:2px 12px;border-radius:12px;background:#fff;color:var(--deep);font-weight:800;font-size:12px}.tg.ok{color:#16774b}
+.info{line-height:1.7}
+.tot{background:#eef7ff;border-radius:20px;padding:12px 16px;margin:12px 0;border:2px dashed #a9d3f3;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.big{font-size:32px;font-weight:700;color:var(--deep)}
+.sec{font-size:17px;margin:16px 0 4px;color:var(--deep)}
+.ph{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px;font-family:'Fredoka',sans-serif;color:var(--deep)}
+.sig{display:flex;gap:18px;margin-top:20px}.sig>div{flex:1;text-align:center;border-top:2px dashed #9fc7e6;padding-top:6px;font-size:13px;min-height:90px}
+@media print{header,nav,.noprint{display:none!important}body{background:#fff;padding:0}main{padding:0;max-width:none}
+.card{box-shadow:none!important;border:0!important;background:#fff!important;padding:0}.card.doc{border:0!important}.po{display:block}.pbreak{break-before:page;page-break-before:always}}
+</style></head><body>
+<header><span class="nt" style="right:78px;top:12px">♪</span><span class="nt" style="right:30px;top:44px;animation-delay:1.2s">♫</span><span class="nt" style="left:56%;top:50px;animation-delay:2.4s">♩</span>
+<div class="row sp" style="position:relative"><h1>🎵 <?= nama ?></h1><button class="lo hide" id="bOut" onclick="keluar()">Keluar</button></div></header><div id="msg"></div>
+
+<div id="login" class="hide"><main><div class="card"><h3>🔐 Masuk</h3><small>Masukkan sandi Anda.</small>
+<input id="lpw" type="password" placeholder="Sandi" onkeydown="if(event.key==='Enter')login()"><button class="b" onclick="login()">Masuk</button>
+<p><small>Orang tua tidak perlu sandi. Mereka membuka link khusus yang Anda kirim.</small></p></div></main></div>
+
+<div id="ortu" class="hide"><main id="oBody"></main></div>
+
+<div id="app" class="hide">
+<main>
+<section id="presensi">
+<div class="card pk"><small>🔎 Cari murid:</small><input id="pSiswa" placeholder="Ketik nama murid..." autocomplete="off"><button class="x" onclick="clr('pSiswa')">✕</button><div class="sg hide" id="pSiswa_sg"></div></div>
+<div id="pBody"></div></section>
+
+<section id="siswa" class="hide">
+<div class="row n" style="margin-bottom:10px"><input id="qS" placeholder="Cari nama / instrumen / ortu / level" oninput="renderSiswa()" style="flex:1">
+<select id="fS" onchange="renderSiswa()" style="width:112px"><option>Semua</option><option>Aktif</option><option>Nonaktif</option></select></div>
+<div class="row sp" style="margin-bottom:10px"><small id="sCount"></small>
+<div class="row n"><button class="b o" style="width:50px" onclick="refreshSiswa(true)">⟳</button><button class="b" style="width:auto;padding:13px 20px" onclick="openForm()">+ Tambah</button></div></div>
+<div id="sForm" class="card hide"><b id="sTitle"></b>
+<div class="row n" style="gap:14px;margin:10px 0"><div id="fotoPrev"></div><div style="flex:1">
+<button class="b o" onclick="$('fFile').click()">📷 Pilih foto dari HP</button>
+<input id="fFile" type="file" accept="image/*" class="hide" onchange="pilihFoto(this)">
+<button class="b o d" onclick="hapusFoto()">Hapus foto</button></div></div>
+<div id="sFields"></div>
+<button class="b" onclick="saveSiswa()">Simpan</button><button class="b o" onclick="closeForm()">Batal</button>
+<div id="admRow" class="hide"><hr style="border:0;border-top:2px dotted #c6e2f8;margin:14px 0">
+<div class="row"><button class="b o" id="bToggle" onclick="toggleAktif()"></button><button class="b o d" onclick="$('delBox').classList.toggle('hide')">🗑 Hapus murid</button></div>
+<div id="delBox" class="card hide" style="margin-top:10px"><b>Hapus murid ini?</b>
+<p><small>Data murid beserta semua presensi, penilaian, dan invoicenya akan dihapus permanen. Kalau murid hanya berhenti, lebih aman dinonaktifkan: riwayatnya tetap tersimpan.</small></p>
+<button class="b o" onclick="$('f_Status').value='Nonaktif';saveSiswa()">Nonaktifkan saja (disarankan)</button>
+<button class="b" style="background:#a00" onclick="doDel()">Ya, hapus permanen</button>
+<button class="b o" onclick="$('delBox').classList.add('hide')">Batal</button></div></div></div>
+<div id="sList"></div></section>
+
+<section id="nilai" class="hide">
+<div class="card pk noprint"><small>🔎 Cari murid:</small><input id="nSiswa" placeholder="Ketik nama murid..." autocomplete="off"><button class="x" onclick="clr('nSiswa')">✕</button><div class="sg hide" id="nSiswa_sg"></div></div>
+<div id="nForm" class="card noprint hide"><b id="nFTitle">⭐ Tambah penilaian</b>
+<input id="nTgl" type="date"><input id="nMateri" placeholder="Materi / lagu">
+<small>1 Perlu bimbingan · 2 Mulai berkembang · 3 Cukup · 4 Baik · 5 Sangat baik</small><div id="nSkor"></div>
+<textarea id="nCat" rows="2" placeholder="Catatan guru / PR"></textarea>
+<button class="b" id="bNSave" onclick="saveNilai()">Simpan Penilaian</button><button class="b o hide" id="bNCancel" onclick="batalEdit()">Batal edit</button></div>
+<div id="nRep"></div></section>
+
+<section id="invoice" class="hide">
+<div class="card pk noprint"><small>🔎 Cari murid:</small><input id="iSiswa" placeholder="Ketik nama murid..." autocomplete="off"><button class="x" onclick="clr('iSiswa')">✕</button><div class="sg hide" id="iSiswa_sg"></div></div>
+<div id="iBody"></div><div id="rekBox"></div></section>
+</main>
+<nav><button data-t="presensi" class="on" onclick="go('presensi')"><i>📅</i>Presensi</button><button data-t="siswa" onclick="go('siswa')"><i>🧒</i>Data Siswa</button>
+<button data-t="nilai" onclick="go('nilai')"><i>⭐</i>Penilaian</button><button data-t="invoice" onclick="go('invoice')"><i>🧾</i>Invoice</button></nav>
+</div>
+
+<div id="linkBox" class="hide"><div class="card" style="width:92%;max-width:440px"><b>🔗 Link untuk orang tua</b><p><small id="lnNama"></small></p>
+<input id="lnUrl" onclick="this.select()"><div class="row"><button class="b o" onclick="salinLink()">Salin</button><button class="b" onclick="kirimLinkWA()">Kirim via WA</button></div>
+<button class="b o" onclick="resetLink()">Buat link baru (link lama dimatikan)</button>
+<button class="b o" onclick="$('linkBox').classList.add('hide')">Tutup</button>
+<p><small>Link ini khusus satu anak. Orang tua hanya bisa melihat profil, kehadiran, materi, dan penilaian anaknya, tanpa bisa mengubah apa pun.</small></p></div></div>
+<script>
+const BOOT=<?!= boot ?>;
+const NAMA_LES=BOOT.nama||'Les Musik Privat'; // diatur di Kode.gs
+
+const $=id=>document.getElementById(id);
+let PW='',SISWA=[],REK=[],BASE='',PRES=[],PER=1,SEL=null,JUSTK=null,NL=[],IDAT={inv:[],pres:[]},ND={inv:[],pres:[]},IP=1,NIP=1,NINC=false,NID='',RKI='',RKN='',RKOPEN=false,FOTO_NEW=null,LNID='',IH='all';
+const PICK={},PICKCB={};
+const run=(fn,...a)=>new Promise((ok,er)=>google.script.run.withSuccessHandler(ok).withFailureHandler(er)[fn](...a));
+const runA=(fn,...a)=>run(fn,PW,...a);
+const toast=(t,ms=2000)=>{const m=$('msg');m.textContent=t;m.style.display='block';clearTimeout(window._tt);window._tt=setTimeout(()=>m.style.display='none',ms)};
+window.addEventListener('unhandledrejection',e=>toast('⚠️ '+String((e.reason&&e.reason.message)||e.reason).replace('Exception: ',''),12000));
+const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const rp=n=>'Rp'+Number(n||0).toLocaleString('id-ID');
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtD=t=>new Date(t+'T00:00').toLocaleDateString('id-ID',{day:'numeric',month:'short'});
+const fmtL=t=>new Date(t+'T00:00').toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+const isAktif=s=>s.Status!=='Nonaktif';
+const aktif=()=>SISWA.filter(isAktif);
+const nJml=s=>Number(s.JmlPertemuan)||4;
+const fn=t=>String(t||'').replace(/[^\w\- ]/g,'').trim().replace(/\s+/g,'-');
+const waNum=t=>String(t||'').replace(/\D/g,'').replace(/^0/,'62');
+const hint='<p class="mut" style="text-align:center;margin-top:30px">🎵 Ketik nama murid di kolom pencarian di atas.</p>';
+function photo(u){if(!u)return'';if(u.indexOf('data:')===0)return u;const m=u.match(/\/d\/([\w-]+)|[?&]id=([\w-]+)/);return m?'https://drive.google.com/thumbnail?id='+(m[1]||m[2])+'&sz=w300':u}
+function av(s,z){return `<div class="av" style="width:${z}px;height:${z}px;font-size:${z/2.4}px"><span>${esc((s.Nama||'?')[0]).toUpperCase()}</span>${s.Foto?`<img src="${esc(photo(s.Foto))}" referrerpolicy="no-referrer" onerror="this.remove()">`:''}</div>`}
+const icon=(p,i)=>!p?i:p.Status==='Hadir'?'✓':p.Status[0];const st=p=>!p?'':p.Status==='Hadir'?'done':'warn';
+
+// ===== Periode & pertemuan (pertemuan selalu 1..4 atau 1..8) =====
+const maxP=a=>Math.max(0,...a.map(p=>Number(p.Periode)||0));
+const rowOf=(a,q,i)=>a.find(p=>Number(p.Periode)===q&&Number(p.Pertemuan)===i);
+const nowP=(s,a)=>{const m=maxP(a);if(!m)return 1;return a.filter(p=>Number(p.Periode)===m).length>=nJml(s)?m+1:m};
+const perDone=(s,a,q)=>a.filter(p=>Number(p.Periode)===q).length>=nJml(s);
+const nq=(s,a,q)=>Math.max(nJml(s),...a.filter(p=>Number(p.Periode)===q).map(p=>Number(p.Pertemuan)||0));
+const hadirQ=(a,q)=>a.filter(p=>Number(p.Periode)===q&&p.Status==='Hadir').length;
+const invOf=d=>q=>d.inv.find(i=>Number(i.Periode)===q);
+const LAB=['Belum Bayar','Lunas'];
+
+// ===== Skala penilaian 1-5 =====
+const SKOR=[null,'Perlu bimbingan','Mulai berkembang','Cukup','Baik','Sangat baik'];
+const SKEM=[null,'🌱','🌿','🙂','👍','🌟'];
+const sv=v=>{const n=Number(v);return Number.isInteger(n)&&n>=1&&n<=5?n:0};
+const skTxt=v=>{const n=sv(v);return n?n+' · '+SKOR[n]:'-'};
+const avgNilai=l=>{const a=l.map(n=>sv(n.Nilai)).filter(Boolean);return a.length?a.reduce((x,y)=>x+y,0)/a.length:0};
+const avgRow=l=>{const m=avgNilai(l);return `<div style="margin:12px 0;text-align:center"><b class="big" style="font-size:32px">${m?m.toFixed(1):'-'}</b><br><small>Rata-rata nilai (${l.length} penilaian)</small>${m?`<br><span class="sc">${SKOR[Math.round(m)]}</span>`:''}</div>
+ <small>Skala: 1 Perlu bimbingan · 2 Mulai berkembang · 3 Cukup · 4 Baik · 5 Sangat baik</small>`};
+const nilaiRow=n=>`<div style="border-top:2px dotted #c6e2f8;padding:10px 0"><div class="row sp"><div><b>${esc(n.Materi)||'-'}</b> <small>${n.Tanggal?fmtL(n.Tanggal):''}</small></div><span class="sc" style="flex:none"><b>${skTxt(n.Nilai)}</b></span></div>${n.Catatan?`<small>${esc(n.Catatan)}</small>`:''}</div>`;
+
+// ===== Mulai: pengajar (login) atau orang tua (link) =====
+function mulai(){
+ if(BOOT.mode==='ortu'){startOrtu();return}
+ let sv='';try{sv=localStorage.getItem('lpp_pw')||''}catch(e){}
+ if(sv){PW=sv;startGuru(true)}else $('login').classList.remove('hide')}
+async function login(){PW=$('lpw').value;if(!PW)return;startGuru(false)}
+async function startGuru(silent){
+ try{const r=await runA('getAwal');SISWA=r.siswa;REK=r.rek;BASE=r.base;
+  try{localStorage.setItem('lpp_pw',PW)}catch(e){}
+  $('login').classList.add('hide');$('app').classList.remove('hide');$('bOut').classList.remove('hide');initGuru()}
+ catch(e){PW='';try{localStorage.removeItem('lpp_pw')}catch(_){}
+  $('login').classList.remove('hide');if(!silent)toast('⚠️ '+String(e.message||e).replace('Exception: ',''),8000)}}
+function keluar(){try{localStorage.removeItem('lpp_pw')}catch(e){}PW='';location.reload()}
+
+// ===== Tampilan orang tua (hanya baca) =====
+let ORT=null,OP=1;
+async function startOrtu(){$('ortu').classList.remove('hide');$('oBody').innerHTML='<p class="mut">Memuat...</p>';
+ try{ORT=await run('getProfilOrtu',BOOT.token);OP=Math.max(1,maxP(ORT.pres));renderOrtu()}
+ catch(e){$('oBody').innerHTML='<div class="card"><b>Link tidak valid atau sudah tidak aktif.</b><p class="mut">Silakan hubungi pengajar untuk meminta link terbaru.</p></div>'}}
+function oblk(d){OP+=d;renderOrtu()}
+function renderOrtu(){const s=ORT.s,N=nJml(s),mp=maxP(ORT.pres);
+ const L=[];for(let i=1;i<=N;i++)L.push({i,p:rowOf(ORT.pres,OP,i)});
+ const hadir=L.filter(r=>r.p&&r.p.Status==='Hadir').length,pct=Math.round(hadir/N*100);
+ const cheer=pct===100?'🎉 Hebat! Kehadiran penuh!':pct>=75?'👍 Bagus, terus semangat!':hadir?'💪 Ayo semangat berlatih!':'🎵 Yuk mulai berlatih!';
+ const jad=[s.Jadwal,s.Durasi?`(${s.Durasi} menit)`:''].filter(Boolean).join(' ')||'';
+ const nl=ORT.nilai;
+ $('oBody').innerHTML=`<div class="row n" style="gap:16px;margin:4px 0 16px">${av(s,80)}<div><h2>${esc(s.Nama)}</h2><span class="mut">${esc(jad)}</span><br><small>${s.Instrumen?'🎼 '+esc(s.Instrumen)+' · ':''}${esc(s.Level)}</small></div></div>
+ <div class="card"><div class="row sp"><div><h3>Kartu kehadiran ⭐</h3><small>Periode ${OP} · ${N}x pertemuan</small></div>
+ <div class="row n"><button class="b o" style="width:46px" onclick="oblk(-1)" ${OP<=1?'disabled':''}>‹</button><button class="b o" style="width:46px" onclick="oblk(1)" ${OP>=mp?'disabled':''}>›</button></div></div>
+ <div class="circles">${L.map(r=>`<div class="c ${st(r.p)}" style="cursor:default"><span class="ci">${icon(r.p,r.i)}</span><small>${r.p?fmtD(r.p.Tanggal):'&nbsp;'}</small></div>`).join('')}</div>
+ <div class="row sp"><b>Hadir ${hadir} dari ${N} pertemuan</b><span class="pct ${pct>=80?'g':pct<50?'r':''}" style="flex:none">${pct}%</span></div><div class="cheer">${cheer}</div></div>
+ <div class="card"><h3>📖 Materi tiap pertemuan</h3>${L.map(r=>`<div class="mi ro"><div class="mic ${st(r.p)}">${icon(r.p,r.i)}</div>
+ <div><b>Pertemuan ${r.i}</b> <small>${r.p?fmtD(r.p.Tanggal)+(r.p.Status!=='Hadir'?' · '+r.p.Status:''):''}</small><div class="mt">${r.p&&r.p.Materi?esc(r.p.Materi):'<span class="mut">Belum ada materi</span>'}</div>
+ ${r.p&&r.p.Catatan?`<small>Catatan: ${esc(r.p.Catatan)}</small>`:''}</div></div>`).join('')}</div>
+ <div class="card"><h3>🌟 Penilaian</h3>${nl.length?avgRow(nl)+nl.map(nilaiRow).join(''):'<p class="mut">Belum ada penilaian.</p>'}</div>
+ ${s.LinkDokumentasi?`<button class="b" onclick="window.open('${esc(s.LinkDokumentasi)}','_blank')">📷 Lihat dokumentasi foto &amp; video</button>`:''}
+ <p class="mut" style="text-align:center"><small>${esc(NAMA_LES)}</small></p>`}
+
+// ===== Kolom pencarian murid =====
+function pick(id){const p=PICK[id];return p?(SISWA.find(x=>x.ID===p.ID)||null):null}
+function mkPicker(id,all,cb){const inp=$(id),sg=$(id+'_sg');PICK[id]=null;PICKCB[id]=cb;
+ const show=()=>{const had=PICK[id];if(had&&inp.value!==had.Nama){PICK[id]=null;if(!inp.value)cb(null)}
+  const q=inp.value.trim().toLowerCase();
+  const l=(all?SISWA:aktif()).filter(s=>!q||(s.Nama+' '+s.Ortu).toLowerCase().includes(q))
+   .sort((a,b)=>(b.Nama.toLowerCase().startsWith(q)-a.Nama.toLowerCase().startsWith(q))||a.Nama.localeCompare(b.Nama)).slice(0,8);
+  sg.innerHTML=l.map(s=>`<div class="sgi" data-id="${s.ID}"><b>${esc(s.Nama)}</b> <small>${s.Instrumen?esc(s.Instrumen)+' · ':''}${esc(s.Level)}${s.Ortu?' · '+esc(s.Ortu):''}</small></div>`).join('')||'<div class="sgi mut">Tidak ditemukan</div>';
+  sg.classList.remove('hide')};
+ inp.addEventListener('input',show);inp.addEventListener('focus',show);
+ inp.addEventListener('blur',()=>setTimeout(()=>sg.classList.add('hide'),200));
+ sg.addEventListener('click',e=>{const d=e.target.closest('.sgi');if(!d||!d.dataset.id)return;
+  const s=SISWA.find(x=>x.ID===d.dataset.id);PICK[id]=s;inp.value=s.Nama;sg.classList.add('hide');cb(s)})}
+function clr(id){$(id).value='';PICK[id]=null;PICKCB[id](null)}
+
+async function refreshSiswa(manual){try{SISWA=await runA('getSiswa');renderSiswa();if(manual)toast('Data dimuat ulang ('+SISWA.length+' siswa)')}catch(e){toast('⚠️ '+e.message,8000)}}
+function go(id){['presensi','siswa','nilai','invoice'].forEach(s=>$(s).classList.toggle('hide',s!==id));
+ document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x.dataset.t===id));
+ refreshSiswa();
+ if(id==='nilai'&&pick('nSiswa'))loadNilai();if(id==='invoice'&&pick('iSiswa'))loadInv();scrollTo(0,0)}
+function initGuru(){$('nTgl').value=today();
+ mkPicker('pSiswa',false,()=>loadPres());mkPicker('nSiswa',true,()=>loadNilai());mkPicker('iSiswa',true,()=>loadInv());
+ $('pBody').innerHTML=hint;$('nRep').innerHTML=hint;$('iBody').innerHTML=hint;
+ buildForm();skForm();renderSiswa();renderRekBox()}
+
+// ===== Presensi / Profil (guru) =====
+const curS=()=>pick('pSiswa');
+async function loadPres(keep){const s=curS();
+ if(!s){$('pBody').innerHTML=hint;return}
+ PRES=await runA('getPresensi',s.ID);
+ if(!keep){PER=nowP(s,PRES);SEL=null}
+ renderPres()}
+function renderPres(){const s=curS();if(!s)return;const N=nJml(s),mp=maxP(PRES);
+ const L=[];for(let i=1;i<=N;i++)L.push({i,p:rowOf(PRES,PER,i)});
+ const hadir=L.filter(r=>r.p&&r.p.Status==='Hadir').length,pct=Math.round(hadir/N*100);
+ const jad=[s.Jadwal,s.Durasi?`(${s.Durasi} menit)`:''].filter(Boolean).join(' ')||'Jadwal belum diatur';
+ $('pBody').innerHTML=`<div class="row n" style="gap:16px;margin:4px 0 16px">${av(s,80)}<div><h2>${esc(s.Nama)}</h2><span class="mut">${esc(jad)}</span><br><small>${s.Instrumen?'🎼 '+esc(s.Instrumen)+' · ':''}${esc(s.Level)}</small></div></div>
+ <div class="card"><div class="row sp"><div><h3>Kartu kehadiran ⭐</h3><small>Periode ${PER} · ${N}x pertemuan</small></div>
+ <div class="row n"><button class="b o" style="width:46px" onclick="blk(-1)" ${PER<=1?'disabled':''}>‹</button><button class="b o" style="width:46px" onclick="blk(1)" ${PER>mp?'disabled':''}>›</button></div></div>
+ <div class="circles">${L.map(r=>`<button class="c ${st(r.p)} ${SEL===r.i?'sel':''} ${JUSTK===r.i?'new':''}" onclick="tapPt(${r.i})"><span class="ci">${icon(r.p,r.i)}</span><small>${r.p?fmtD(r.p.Tanggal):'&nbsp;'}</small></button>`).join('')}</div>
+ <div class="row sp"><b>Hadir ${hadir} dari ${N} pertemuan</b><span class="pct ${pct>=80?'g':pct<50?'r':''}" style="flex:none">${pct}%</span></div></div>
+ <div id="pPanel"></div>
+ <div class="card"><h3>📖 Materi tiap pertemuan</h3>${L.map(r=>`<div class="mi" onclick="tapPt(${r.i})"><div class="mic ${st(r.p)}">${icon(r.p,r.i)}</div>
+ <div><b>Pertemuan ${r.i}</b> <small>${r.p?fmtD(r.p.Tanggal)+(r.p.Status!=='Hadir'?' · '+r.p.Status:''):''}</small><div class="mt">${r.p&&r.p.Materi?esc(r.p.Materi):'<span class="mut">Belum ada materi</span>'}</div></div></div>`).join('')}</div>`;
+ JUSTK=null;renderPanel()}
+function blk(d){PER+=d;SEL=null;renderPres()}
+async function tapPt(i){const s=curS();let p=rowOf(PRES,PER,i);
+ if(!p){p={ID:s.ID,Nama:s.Nama,Periode:PER,Pertemuan:i,Tanggal:today(),Status:'Hadir',Materi:'',Catatan:''};
+  await runA('savePertemuan',p);PRES.push(p);JUSTK=i;toast('Hadir dicatat: '+fmtD(p.Tanggal))}
+ SEL=i;renderPres();$('pPanel').scrollIntoView({behavior:'smooth',block:'center'})}
+function renderPanel(){const el=$('pPanel'),p=rowOf(PRES,PER,SEL);if(!p){el.innerHTML='';return}
+ const prev=PRES.filter(x=>x.Materi&&(Number(x.Periode)<PER||(Number(x.Periode)===PER&&Number(x.Pertemuan)<SEL))).sort((a,b)=>(b.Periode-a.Periode)||(b.Pertemuan-a.Pertemuan))[0];
+ el.innerHTML=`<div class="card"><b>Pertemuan ke-${SEL} · Periode ${PER}</b>
+ <label><small>Tanggal</small></label><input type="date" id="dTgl" value="${p.Tanggal}">
+ <select id="dSt">${['Hadir','Izin','Sakit','Alpa'].map(t=>`<option ${p.Status===t?'selected':''}>${t}</option>`).join('')}</select>
+ <label><small>Materi hari ini</small></label><input id="dMat" value="${esc(p.Materi)}" placeholder="mis. Für Elise bar 1-16, tangga nada C">
+ ${prev?`<small>Sebelumnya: ${esc(prev.Materi)}</small>`:''}
+ <textarea id="dCat" rows="2" placeholder="Catatan / PR">${esc(p.Catatan)}</textarea>
+ <div class="row"><button class="b" onclick="saveDetail()">Simpan</button><button class="b o" onclick="delPt()">Kosongkan</button></div></div>`}
+async function saveDetail(){const p=rowOf(PRES,PER,SEL);
+ Object.assign(p,{Tanggal:$('dTgl').value,Status:$('dSt').value,Materi:$('dMat').value,Catatan:$('dCat').value});
+ await runA('savePertemuan',p);toast('Tersimpan ✓');renderPres()}
+async function delPt(){if(!confirm('Kosongkan pertemuan ini?'))return;const s=curS();
+ await runA('hapusPertemuan',s.ID,PER,SEL);PRES=PRES.filter(x=>!(Number(x.Periode)===PER&&Number(x.Pertemuan)===SEL));SEL=null;renderPres()}
+// ===== Data Siswa =====
+const KEYS=['Nama','Instrumen','Level','Ortu','Telepon','TglMulai','Jadwal','Durasi','JmlPertemuan','Tarif','Rekening','LinkDokumentasi','Status','ID','Foto'];
+function buildForm(){
+ const F=[['Nama','Nama siswa','text'],['Instrumen','Instrumen (mis. Piano / Gitar / Biola / Vokal)','text'],['Level','Level (mis. Pemula / Grade 2)','text'],['Ortu','Nama orang tua','text'],['Telepon','No. WhatsApp ortu','tel'],['TglMulai','Tanggal mulai','date'],['Jadwal','Jadwal rutin (mis. Senin, 15.00)','text'],['Durasi','Durasi per sesi (menit)','number']];
+ $('sFields').innerHTML=F.map(([k,l,t])=>`<label><small>${l}</small></label><input id="f_${k}" type="${t}">`).join('')+
+ '<label><small>Jumlah pertemuan per periode</small></label><select id="f_JmlPertemuan"><option value="4">4x pertemuan</option><option value="8">8x pertemuan</option></select>'+
+ '<label><small>Biaya (Rp) per periode, ditagihkan ke orang tua</small></label><input id="f_Tarif" type="number">'+
+ '<label><small>Rekening pembayaran bawaan</small></label><select id="f_Rekening"></select>'+
+ '<label><small>Link folder dokumentasi foto/video</small></label><input id="f_LinkDokumentasi">'+
+ '<label><small>Status</small></label><select id="f_Status"><option>Aktif</option><option>Nonaktif</option></select><input type="hidden" id="f_ID"><input type="hidden" id="f_Foto">';
+}
+function renderSiswa(){const q=$('qS').value.toLowerCase(),f=$('fS').value;
+ $('sCount').textContent=`${SISWA.length} siswa · ${aktif().length} aktif`;
+ $('sList').innerHTML=SISWA.filter(s=>(f==='Semua'||(f==='Aktif')===isAktif(s))&&(s.Nama+' '+(s.Instrumen||'')+' '+s.Ortu+' '+s.Level).toLowerCase().includes(q)).map(s=>`<div class="card">
+ <div class="row n" style="gap:12px">${av(s,56)}<div style="flex:1"><div class="row sp"><b>${esc(s.Nama)}</b><span class="tag ${isAktif(s)?'ok':''}" style="flex:none">${isAktif(s)?'Aktif':'Nonaktif'}</span></div>
+ <small>${s.Instrumen?'🎼 '+esc(s.Instrumen)+' · ':''}${esc(s.Level)} · ${esc(s.Jadwal)||'-'}${s.Durasi?' ('+s.Durasi+' mnt)':''}<br>Ortu: ${esc(s.Ortu)||'-'}<br>${rp(s.Tarif)} / ${nJml(s)}x pertemuan</small></div></div>
+ <div class="row w" style="margin-top:10px"><button class="b o" onclick="goProfil('${s.ID}')">Profil</button><button class="b o" onclick="openForm('${s.ID}')">Edit</button>
+ <button class="b o" onclick="showLink('${s.ID}')">🔗 Link ortu</button>
+ ${s.LinkDokumentasi?`<button class="b o" onclick="openDok('${s.ID}')">📷</button>`:''}
+ ${s.Telepon?`<button class="b o" onclick="openWA('${s.ID}')">WA</button>`:''}</div></div>`).join('')||'<p class="mut">Tidak ada data.</p>'}
+function sById(id){return SISWA.find(x=>x.ID===id)}
+function openDok(id){const s=sById(id);if(s&&s.LinkDokumentasi)window.open(s.LinkDokumentasi,'_blank')}
+function openWA(id){const s=sById(id);if(s)window.open('https://wa.me/'+waNum(s.Telepon),'_blank')}
+function goProfil(id){const s=sById(id);if(!s||!isAktif(s))return toast('Siswa nonaktif');
+ PICK.pSiswa=s;$('pSiswa').value=s.Nama;go('presensi');loadPres()}
+function fotoPrev(){$('fotoPrev').innerHTML=av({Nama:$('f_Nama').value||'?',Foto:FOTO_NEW||$('f_Foto').value},76)}
+function pilihFoto(inp){const f=inp.files[0];if(!f)return;const u=URL.createObjectURL(f),img=new Image();
+ img.onload=()=>{const M=480,sc=Math.min(1,M/Math.max(img.width,img.height)),c=document.createElement('canvas');
+  c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  FOTO_NEW=c.toDataURL('image/jpeg',0.82);URL.revokeObjectURL(u);fotoPrev();toast('Foto dipilih. Klik Simpan untuk menyimpan.')};
+ img.onerror=()=>toast('⚠️ Foto tidak bisa dibaca');img.src=u;inp.value=''}
+function hapusFoto(){FOTO_NEW=null;$('f_Foto').value='';fotoPrev()}
+function openForm(id){const s=sById(id)||{Status:'Aktif',JmlPertemuan:'4'};$('sTitle').textContent=id?'Edit Siswa':'Tambah Siswa';
+ $('f_Rekening').innerHTML='<option value="">(otomatis: rekening pertama)</option>'+REK.map(r=>`<option value="${r.Kode}">${esc(r.Bank+' '+r.NoRek+' a.n. '+r.AtasNama)}</option>`).join('');
+ const j=$('f_JmlPertemuan');if(s.JmlPertemuan&&![...j.options].some(o=>o.value===String(s.JmlPertemuan)))j.add(new Option(s.JmlPertemuan+'x pertemuan',s.JmlPertemuan));
+ KEYS.forEach(k=>$('f_'+k).value=s[k]||'');
+ $('f_JmlPertemuan').value=s.JmlPertemuan||'4';$('f_Status').value=s.Status==='Nonaktif'?'Nonaktif':'Aktif';
+ FOTO_NEW=null;fotoPrev();
+ $('admRow').classList.toggle('hide',!id);$('delBox').classList.add('hide');
+ $('bToggle').textContent=s.Status==='Nonaktif'?'Aktifkan kembali':'Nonaktifkan (berhenti)';
+ $('sForm').classList.remove('hide');$('sForm').scrollIntoView({behavior:'smooth'})}
+function closeForm(){$('sForm').classList.add('hide')}
+async function saveSiswa(){if(!$('f_Nama').value.trim())return toast('Nama wajib diisi');
+ toast('Menyimpan...',60000);
+ try{
+  if(FOTO_NEW){toast('Mengunggah foto...',60000);$('f_Foto').value=await runA('uploadFoto',FOTO_NEW.split(',')[1]);FOTO_NEW=null}
+  const o={};KEYS.forEach(k=>o[k]=$('f_'+k).value);
+  const r=await runA('saveSiswa',o);SISWA=r.list;renderSiswa();closeForm();
+  if(!SISWA.find(x=>x.ID===r.id))toast('⚠️ Tersimpan tapi tidak terbaca di sheet. Cek sheet Siswa.',9000);
+  else toast('✓ '+o.Nama+' tersimpan');
+  if(curS())loadPres(true)}
+ catch(e){toast('⚠️ Gagal menyimpan: '+String(e.message||e).replace('Exception: ',''),12000)}}
+function toggleAktif(){$('f_Status').value=$('f_Status').value==='Nonaktif'?'Aktif':'Nonaktif';saveSiswa()}
+async function doDel(){const id=$('f_ID').value,nm=$('f_Nama').value;if(!id)return;
+ if(!confirm('Hapus permanen "'+nm+'" beserta semua datanya?'))return;
+ toast('Menghapus...',15000);
+ try{SISWA=await runA('hapusSiswa',id);['pSiswa','nSiswa','iSiswa'].forEach(k=>{if(PICK[k]&&PICK[k].ID===id)clr(k)});
+  renderSiswa();closeForm();toast('✓ '+nm+' dihapus')}catch(e){toast('⚠️ Gagal menghapus: '+e.message,12000)}}
+
+// ===== Link orang tua =====
+function linkUrl(s){return BASE+(BASE.indexOf('?')>=0?'&':'?')+'p='+s.Token}
+function showLink(id){const s=sById(id);if(!s)return;LNID=id;$('lnNama').textContent='Untuk orang tua '+s.Nama;
+ $('lnUrl').value=s.Token?linkUrl(s):'';$('linkBox').classList.remove('hide')}
+function salinLink(){const i=$('lnUrl');i.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}
+ toast(ok?'✓ Link disalin':'Tekan lama pada kolom link lalu pilih Salin',3000)}
+function kirimLinkWA(){const s=sById(LNID);if(!s)return;
+ const t=`Halo ${s.Ortu||''}, ini link untuk melihat profil, kehadiran, dan materi les ${s.Nama} di ${NAMA_LES}: ${$('lnUrl').value}`;
+ window.open('https://wa.me/'+waNum(s.Telepon)+'?text='+encodeURIComponent(t),'_blank')}
+async function resetLink(){if(!confirm('Buat link baru? Link lama yang sudah dibagikan tidak akan bisa dibuka lagi.'))return;
+ SISWA=await runA('resetToken',LNID);showLink(LNID);toast('✓ Link baru dibuat')}
+
+// ===== Rekening =====
+const rekText=k=>{const r=REK.find(x=>x.Kode===k);return r?`${r.Bank} ${r.NoRek} a.n. ${r.AtasNama}`:''};
+const defRek=s=>(REK.find(x=>x.Kode===s.Rekening)||REK[0]||{}).Kode||'';
+function rekPick(c,rk){return `<div class="noprint"><small>Rekening pembayaran:</small><select onchange="setRek('${c}',this.value)">${REK.map(r=>`<option value="${r.Kode}" ${r.Kode===rk?'selected':''}>${esc(r.Bank+' '+r.NoRek+' a.n. '+r.AtasNama)}</option>`).join('')||'<option value="">(belum ada rekening, tambahkan di bawah)</option>'}</select></div>`}
+function setRek(c,v){if(c==='i'){RKI=v;renderInv()}else{RKN=v;renderNilai()}}
+function renderRekBox(){$('rekBox').innerHTML=`<details class="card noprint" ${RKOPEN?'open':''} ontoggle="RKOPEN=this.open"><summary><b>🏦 Kelola rekening pembayaran</b></summary>
+ ${REK.map(r=>`<div class="row sp" style="padding:8px 0"><span>${esc(r.Bank)} ${esc(r.NoRek)}<br><small>a.n. ${esc(r.AtasNama)}</small></span><button class="b o d" style="flex:none;width:48px" onclick="delRek('${r.Kode}')">🗑</button></div>`).join('')||'<p class="mut">Belum ada rekening.</p>'}
+ <input id="rkBank" placeholder="Bank (mis. BCA)"><input id="rkNo" placeholder="Nomor rekening" inputmode="numeric"><input id="rkAtas" placeholder="Atas nama"><button class="b" onclick="addRek()">+ Tambah rekening</button></details>`}
+async function addRek(){const o={Bank:$('rkBank').value,NoRek:$('rkNo').value,AtasNama:$('rkAtas').value};
+ if(!o.Bank.trim()||!o.NoRek.trim())return toast('Bank dan nomor rekening wajib diisi');
+ REK=await runA('simpanRekening',o);const s=pick('iSiswa');if(!RKI&&s)RKI=defRek(s);const n=pick('nSiswa');if(!RKN&&n)RKN=defRek(n);
+ RKOPEN=true;renderRekBox();if(pick('iSiswa'))renderInv();if(pick('nSiswa')&&ND.inv)renderNilai();toast('✓ Rekening ditambahkan')}
+async function delRek(k){if(!confirm('Hapus rekening ini? Invoice yang sudah terbit tidak berubah.'))return;
+ REK=await runA('hapusRekening',k);if(!REK.find(r=>r.Kode===RKI))RKI=REK[0]?REK[0].Kode:'';if(!REK.find(r=>r.Kode===RKN))RKN=REK[0]?REK[0].Kode:'';
+ RKOPEN=true;renderRekBox();if(pick('iSiswa'))renderInv();if(pick('nSiswa'))renderNilai()}
+
+// ===== Kartu invoice (tagihan orang tua) =====
+async function fetchSD(id){const r=await Promise.all([runA('getInvoiceSiswa',id),runA('getPresensi',id)]);return{inv:r[0],pres:r[1]}}
+const nP=(s,d)=>Math.max(1,maxP(d.pres),...d.inv.map(i=>Number(i.Periode)||0));
+// Invoice otomatis mengikuti periode TERAKHIR yang diisi di Presensi
+const defIP=(s,d)=>Math.max(1,maxP(d.pres));
+const perInfo=(s,d,ip)=>{const i=invOf(d)(ip);return `<div class="card noprint"><div class="row sp"><b>Periode ${ip}</b><span class="tg ${i?'ok':''}">${i?i.Status:'belum diterbitkan'}</span></div><small>Mengikuti periode terakhir yang diisi di Presensi.</small></div>`};
+const tbl=r=>`<table class="t"><tr><th>Ke-</th><th>Tanggal</th><th>Status</th><th>Materi</th></tr>${r}</table>`;
+function tRows(a,q,n){let h='';for(let i=1;i<=n;i++){const p=rowOf(a,q,i);h+=`<tr><td>${i}</td><td>${p?fmtD(p.Tanggal):'-'}</td><td>${p?p.Status:'-'}</td><td>${p&&p.Materi?esc(p.Materi):'-'}</td></tr>`}return h}
+const invHead=(inv,title)=>`<div class="dh"><div class="row sp" style="align-items:flex-start"><div><div class="dt">${title}</div><small>${esc(NAMA_LES)}</small></div>
+ <div style="text-align:right"><b>${inv?inv.NoInvoice:'(belum diterbitkan)'}</b><br><small>${inv?'Terbit: '+fmtL(inv.Terbit):''}</small><br><span class="tg ${inv&&inv.Status===LAB[1]?'ok':''}">${inv?inv.Status:'Draft'}</span></div></div></div>`;
+function invOrtu(s,d,ip,id,rekT,hist){const N=nJml(s),inv=invOf(d)(ip),total=inv?Number(inv.Total):Number(s.Tarif||0);
+ const lo=hist==='all'?1:Math.max(1,ip-Number(hist));let prev='';
+ for(let q=ip-1;q>=lo;q--){const n=nq(s,d.pres,q);prev+=`<div class="ph"><b>Periode ${q}</b><small>Hadir ${hadirQ(d.pres,q)} dari ${n}</small></div>${tbl(tRows(d.pres,q,n))}`}
+ return `<div class="card doc" id="${id}">${invHead(inv,'INVOICE')}
+ <div class="info">Murid: <b>${esc(s.Nama)}</b> <small>${esc(s.Level)}</small><br>${s.Instrumen?'Instrumen: '+esc(s.Instrumen)+'<br>':''}Orang tua: ${esc(s.Ortu)||'-'}<br>Jadwal: ${esc(s.Jadwal)||'-'}${s.Durasi?' ('+s.Durasi+' menit)':''}</div>
+ <div class="tot"><small>Tagihan ${N}x pertemuan · Periode ${ip}</small><div class="big">${rp(total)}</div><div>Pembayaran ke: <b>${esc(rekT)||'-'}</b></div></div>
+ <h4 class="sec">⭐ Periode berjalan · Periode ${ip}</h4>${tbl(tRows(d.pres,ip,1))}<small>Pertemuan pertama pada periode ini.</small>
+ ${prev?`<h4 class="sec">📚 Riwayat periode sebelumnya</h4>${prev}`:''}
+ <div class="po"><small>Dicetak ${fmtL(today())}</small></div></div>`}
+const histPick=()=>`<div class="noprint"><small>Riwayat periode sebelumnya yang ditampilkan:</small><select onchange="setHist(this.value)">${[['all','Semua periode sebelumnya'],['1','1 periode terakhir'],['2','2 periode terakhir'],['3','3 periode terakhir']].map(([v,l])=>`<option value="${v}" ${IH===v?'selected':''}>${l}</option>`).join('')}</select></div>`;
+function setHist(v){IH=v;if(!$('invoice').classList.contains('hide')&&pick('iSiswa'))renderInv();if(!$('nilai').classList.contains('hide')&&pick('nSiswa'))renderNilai()}
+async function terbit(c){const s=pick(c==='i'?'iSiswa':'nSiswa');if(!s)return;const ip=c==='i'?IP:NIP,rk=c==='i'?RKI:RKN;
+ if(!REK.length&&!confirm('Belum ada rekening. Terbitkan tanpa nomor rekening?'))return;
+ toast('Menerbitkan...',15000);const l=await runA('buatInvoice',s.ID,ip,rekText(rk));
+ (c==='i'?IDAT:ND).inv=l;toast('✓ Invoice diterbitkan');c==='i'?renderInv():renderNilai()}
+async function batalInv(c){const d=c==='i'?IDAT:ND,ip=c==='i'?IP:NIP,inv=invOf(d)(ip);if(!inv)return;
+ if(!confirm('Batalkan invoice '+inv.NoInvoice+'? Nomor, nominal, dan rekening dilepas, lalu bisa diterbitkan ulang.'))return;
+ d.inv=await runA('hapusInvoice',inv.NoInvoice);toast('Invoice dibatalkan');c==='i'?renderInv():renderNilai()}
+async function tglInv(no,status){await runA('setStatusInvoice',no,status);const i=IDAT.inv.find(x=>x.NoInvoice===no);if(i)i.Status=status;renderInv()}
+
+// ===== Buat PDF / gambar, unduh, dan kirim ke WhatsApp =====
+const render2Canvas=id=>html2canvas($(id),{scale:2,backgroundColor:'#ffffff',useCORS:true,windowWidth:900,logging:false});
+function addPages(pdf,cv,first){const m=10,cw=190,chp=277,pxp=Math.floor(cv.width*chp/cw);let y=0,pg=0;
+ while(y<cv.height){const h=Math.min(pxp,cv.height-y),sl=document.createElement('canvas');sl.width=cv.width;sl.height=h;
+  sl.getContext('2d').drawImage(cv,0,y,cv.width,h,0,0,cv.width,h);
+  if(!(first&&pg===0))pdf.addPage();
+  pdf.addImage(sl.toDataURL('image/jpeg',0.92),'JPEG',m,m,cw,h*cw/cv.width);y+=h;pg++}}
+async function makePDF(ids){const pdf=new window.jspdf.jsPDF({unit:'mm',format:'a4'});let first=true;
+ for(const id of ids){addPages(pdf,await render2Canvas(id),first);first=false}return pdf}
+const fileB64=f=>new Promise((ok,er)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]);r.onerror=er;r.readAsDataURL(f)});
+async function inlinePhotos(ids){for(const id of ids){const el=$(id);if(!el)continue;
+ for(const im of el.querySelectorAll('.av img')){if(im.src.indexOf('data:')===0||!/[?&]id=/.test(im.src))continue;
+  try{const d=await runA('fotoData',im.src);await new Promise(ok=>{im.onload=ok;im.onerror=ok;im.src=d})}catch(e){}}}}
+function download(f){const u=URL.createObjectURL(f),a=document.createElement('a');a.href=u;a.download=f.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000)}
+async function kirimDoc(o){const out=$(o.out);out.innerHTML='';
+ if(!window.html2canvas||!window.jspdf)return toast('⚠️ Pustaka PDF belum termuat. Periksa koneksi internet lalu muat ulang.',8000);
+ toast('Menyiapkan '+(o.kind==='pdf'?'PDF':'gambar')+'...',60000);
+ let file,mime;
+ try{await inlinePhotos(o.ids);
+  if(o.kind==='pdf'){mime='application/pdf';file=new File([(await makePDF(o.ids)).output('blob')],o.fname+'.pdf',{type:mime})}
+  else{mime='image/png';const cv=await render2Canvas(o.ids[0]);file=new File([await new Promise(r=>cv.toBlob(r,'image/png'))],o.fname+'.png',{type:mime})}}
+ catch(e){return toast('⚠️ Gagal membuat file: '+(e.message||e),10000)}
+ if(o.mode==='unduh'){download(file);return toast('✓ File dibuat. Cek folder Unduhan.',4000)}
+ if(navigator.canShare&&navigator.canShare({files:[file]})){
+  try{await navigator.share({files:[file],title:o.fname,text:o.text});return toast('✓ Pilih WhatsApp lalu kontak tujuan',4000)}
+  catch(e){if(e.name==='AbortError')return toast('Dibatalkan')}}
+ toast('Mengunggah file ke Drive...',60000);
+ try{const url=await runA('simpanDokumen',file.name,mime,await fileB64(file));
+  const wa='https://wa.me/'+waNum(o.phone)+'?text='+encodeURIComponent(o.text+'\n'+url);
+  out.innerHTML=`<div class="card"><small>HP/browser ini tidak mengizinkan melampirkan file langsung dari aplikasi, jadi file disimpan di Drive dan dikirim sebagai link.</small>
+  <a class="b" href="${esc(wa)}" target="_blank">Buka WhatsApp &amp; kirim link ${o.kind==='pdf'?'PDF':'gambar'}</a><input value="${esc(url)}" readonly onclick="this.select()"></div>`;
+  toast('✓ Siap dikirim, tekan tombol di bawah',5000)}
+ catch(e){toast('⚠️ '+String(e.message||e).replace('Exception: ',''),12000)}}
+
+// ===== Penilaian (per murid; opsi sertakan invoice orang tua) =====
+async function loadNilai(){const s=pick('nSiswa');
+ if(!s){$('nForm').classList.add('hide');$('nRep').innerHTML=hint;return}
+ $('nForm').classList.remove('hide');
+ const r=await Promise.all([runA('getPenilaian',s.ID),fetchSD(s.ID)]);
+ const c=pick('nSiswa');if(!c||c.ID!==s.ID)return;
+ NL=r[0];ND=r[1];if(NID!==s.ID){NID=s.ID;RKN=defRek(s);setFormNilai(null)}NIP=defIP(s,ND);renderNilai()}
+function renderNilai(){const s=pick('nSiswa');if(!s)return;
+ const inv=invOf(ND)(NIP),rekT=inv?(inv.Rekening||rekText(RKN)):rekText(RKN);
+ $('nRep').innerHTML=`<div class="card doc" id="repCard"><div class="dh"><div class="dt" style="font-size:22px">LAPORAN PENILAIAN</div><small>${esc(NAMA_LES)}</small></div>
+ <div class="row n" style="gap:14px">${av(s,64)}<div><h2 style="font-size:22px">${esc(s.Nama)}</h2>
+ <small>${s.Instrumen?'🎼 '+esc(s.Instrumen)+' · ':''}${esc(s.Level)}</small></div></div>
+ ${NL.length?avgRow(NL)+NL.map(nilaiRow).join(''):'<p class="mut">Belum ada penilaian.</p>'}
+ <div class="po"><small>Dicetak ${fmtL(today())}</small></div></div>
+ <div class="card noprint"><label class="cb"><input type="checkbox" ${NINC?'checked':''} onchange="NINC=this.checked;renderNilai()"><b>Sertakan invoice orang tua (cetak / kirim bersama)</b></label>
+ ${NINC?`<div style="margin-top:10px"><small>Periode yang ditagihkan: <b>Periode ${NIP}</b> (periode terakhir di Presensi)</small>${histPick()}
+ ${inv?`<small>Invoice ${inv.NoInvoice} · ${inv.Status}</small>`:rekPick('n',RKN)+`<small>Invoice belum diterbitkan, akan tercetak sebagai Draft.</small><button class="b o" onclick="terbit('n')">Terbitkan invoice periode ${NIP}</button>`}</div>`:''}</div>
+ ${NINC?`<div class="pbreak">${invOrtu(s,ND,NIP,'invCardN',rekT,IH)}</div>`:''}
+ ${NL.length?`<div class="card noprint"><b>📝 Kelola penilaian</b>${NL.map(n=>`<div style="border-top:2px dotted #c6e2f8;padding:8px 0"><b>${esc(n.Materi)||'-'}</b> <small>${n.Tanggal?fmtL(n.Tanggal):''}</small><br><small>Nilai: <b>${skTxt(n.Nilai)}</b></small><div class="eb"><button class="b o" onclick="editNilai('${n.NoNilai}')">✏️ Edit</button><button class="b o d" onclick="hapusNilai('${n.NoNilai}')">🗑 Hapus</button></div></div>`).join('')}</div>`:''}
+ <div class="noprint"><div class="g2"><button class="b o" onclick="print()">🖨️ Cetak</button><button class="b o" onclick="kirimNilai('unduh')">⬇️ Unduh PDF</button></div>
+ <button class="b" onclick="kirimNilai('wa')">💬 Kirim PDF ke WhatsApp${NINC?' (+ invoice)':''}</button><div id="nOut"></div></div>`}
+function kirimNilai(mode){const s=pick('nSiswa');if(!s)return;
+ kirimDoc({mode,kind:'pdf',ids:NINC?['repCard','invCardN']:['repCard'],fname:'Penilaian-'+fn(s.Nama),phone:s.Telepon,out:'nOut',
+ text:`Halo ${s.Ortu||''}, berikut laporan penilaian ${s.Nama} dari ${NAMA_LES}${NINC?' beserta tagihannya':''}.`})}
+let NS=0;
+function skForm(){$('nSkor').innerHTML=`<div style="margin:12px 0"><div class="sks">${[1,2,3,4,5].map(n=>`<button class="sk ${NS===n?'on':''}" onclick="setSk(${n})">${n}</button>`).join('')}</div>
+ <div class="skl">${NS?SKEM[NS]+' '+SKOR[NS]:'<span class="mut">Pilih nilai 1–5</span>'}</div></div>`}
+function setSk(n){NS=n;skForm()}
+let NEDIT='';
+function setFormNilai(n){NEDIT=n?n.NoNilai:'';
+ $('nFTitle').textContent=n?'✏️ Edit penilaian':'⭐ Tambah penilaian';
+ $('bNSave').textContent=n?'Simpan Perubahan':'Simpan Penilaian';
+ $('bNCancel').classList.toggle('hide',!n);
+ $('nTgl').value=n?(n.Tanggal||today()):today();$('nMateri').value=n?n.Materi:'';$('nCat').value=n?n.Catatan:'';
+ NS=n?sv(n.Nilai):0;skForm()}
+function editNilai(no){const n=NL.find(x=>x.NoNilai===no);if(!n)return toast('Data tidak ditemukan, muat ulang halaman');
+ setFormNilai(n);$('nForm').scrollIntoView({behavior:'smooth'})}
+function batalEdit(){setFormNilai(null)}
+async function hapusNilai(no){const n=NL.find(x=>x.NoNilai===no);if(!n)return;
+ if(!confirm('Hapus penilaian "'+(n.Materi||'-')+'" tanggal '+(n.Tanggal?fmtL(n.Tanggal):'-')+'? Tidak bisa dikembalikan.'))return;
+ if(NEDIT===no)setFormNilai(null);
+ await runA('hapusPenilaian',no);toast('Penilaian dihapus ✓');loadNilai()}
+async function saveNilai(){const s=pick('nSiswa');if(!s)return;
+ if(!NS)return toast('Pilih nilai 1 sampai 5 dulu');
+ const o={Tanggal:$('nTgl').value,ID:s.ID,Nama:s.Nama,Materi:$('nMateri').value,Nilai:NS,Catatan:$('nCat').value};
+ if(NEDIT){o.NoNilai=NEDIT;await runA('updatePenilaian',o);toast('Perubahan tersimpan ✓')}
+ else{await runA('savePenilaian',o);toast('Penilaian tersimpan ✓')}
+ setFormNilai(null);loadNilai()}
+
+// ===== Invoice (orang tua, per periode) =====
+async function loadInv(){const s=pick('iSiswa');if(!s){$('iBody').innerHTML=hint;return}
+ const d=await fetchSD(s.ID);const c=pick('iSiswa');if(!c||c.ID!==s.ID)return;
+ IDAT=d;IP=defIP(s,d);RKI=defRek(s);renderInv()}
+function renderInv(){const s=pick('iSiswa');if(!s)return;
+ const inv=invOf(IDAT)(IP),nx=inv&&inv.Status===LAB[1]?LAB[0]:LAB[1];
+ const rekT=inv?(inv.Rekening||rekText(RKI)):rekText(RKI);
+ const card=invOrtu(s,IDAT,IP,'invCardI',rekT,IH);
+ const act=inv?`<div class="row"><button class="b o" onclick="tglInv('${inv.NoInvoice}','${nx}')">Tandai ${nx}</button>
+ <button class="b o d" onclick="batalInv('i')">Batalkan invoice</button></div><small>Nominal & rekening sudah terkunci. Untuk mengubahnya, batalkan invoice lalu terbitkan ulang.</small>`
+ :`<button class="b o" onclick="terbit('i')">✔ Terbitkan invoice</button><small>Terbitkan = beri nomor invoice dan kunci nominal & rekening, supaya status ${LAB[0]} / ${LAB[1]} bisa dicatat. Cetak dan kirim tetap bisa tanpa diterbitkan (tampil sebagai Draft).</small>`;
+ $('iBody').innerHTML=perInfo(s,IDAT,IP)+`<div class="card noprint">${inv?'':rekPick('i',RKI)}${histPick()}</div>`+card+
+ `<div class="noprint"><div class="g2"><button class="b o" onclick="print()">🖨️ Cetak</button><button class="b o" onclick="kirimInv('pdf','unduh')">⬇️ Unduh PDF</button>
+ <button class="b" onclick="kirimInv('pdf','wa')">💬 Kirim PDF ke WA</button><button class="b" onclick="kirimInv('png','wa')">🖼️ Kirim gambar ke WA</button></div>
+ <button class="b o" onclick="kirimInv('png','unduh')">⬇️ Unduh gambar</button><div id="iOut"></div>
+ <hr style="border:0;border-top:2px dotted #c6e2f8;margin:14px 0">${act}</div>`}
+function kirimInv(kind,mode){const s=pick('iSiswa');if(!s)return;const inv=invOf(IDAT)(IP),N=nJml(s);
+ const total=inv?Number(inv.Total):Number(s.Tarif||0);
+ kirimDoc({mode,kind,ids:['invCardI'],fname:'Invoice-'+fn(s.Nama)+'-Periode'+IP,phone:s.Telepon,out:'iOut',
+ text:`Halo ${s.Ortu||''}, berikut tagihan ${NAMA_LES} untuk ${s.Nama} (periode ${IP}, ${N}x pertemuan): ${rp(total)}.${inv?' No. invoice '+inv.NoInvoice+'.':''}`})}
+
+mulai();
+</script></body></html>
